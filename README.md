@@ -8,6 +8,7 @@ We develop a proximal stochastic Polyak method `ProxSPS` for stochastic optimiza
 
 The methods `SPS` and `ProxSPS` from the paper are implemented in [`sps/sps.py`](sps/sps.py). If you want to use `ProxSPS`, make sure to set `prox=True`, for example
 
+	from sps.sps import SPS
 	SPS(params, lr=1, weight_decay=1e-3, prox=True)
 
 ## Experimental setup

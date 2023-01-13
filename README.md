@@ -1,5 +1,8 @@
 # Proximal Stochastic Polyak 
 
+[![arXiv](https://img.shields.io/badge/arXiv-2011.00898-b31b1b.svg)](https://arxiv.org/abs/2301.04935)
+
+
 ![](results/plots/misc/flow_squared.gif)
 
 ## About

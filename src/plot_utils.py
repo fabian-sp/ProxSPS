@@ -122,15 +122,15 @@ plt.rc('text', usetex=True)
 
 
 # aesthetics
-color_dict = {'prox-sps': '#2C3E50','sps': '#E74C3C', 'sgd': '#3498DB', 'decsps': '#FFB136',
+color_dict = {'prox-sps': '#2C3E50','sps': '#E74C3C', 'sgd': '#3498DB',
               'adam': '#C4D6B0','adamw': '#C4D6B0', 'prox-adam': '#C4D6B0'}
-zorder_dict = {'prox-sps': 5,'sps': 4, 'sgd': 3,'adam': 2, 'adamw': 2,'prox-adam': 2, 'decsps': 2}
+zorder_dict = {'prox-sps': 5,'sps': 4, 'sgd': 3,'adam': 2, 'adamw': 2,'prox-adam': 2}
 
 #C4D6B0
 #AFC893
 
 all_ls = ['-', '--', ':', '-.', (0, (3, 5, 1, 5, 1, 5))]
-markevery_dict = {'sps': 5, 'prox-sps': 8, 'sgd': 10, 'adam': 12, 'adamw': 12, 'prox-adam': 14, 'decsps': 11}
+markevery_dict = {'sps': 5, 'prox-sps': 8, 'sgd': 10, 'adam': 12, 'adamw': 12, 'prox-adam': 14}
 
 #E78F3C # from paletton matched to sps read
 #ECF0F1  # grey

@@ -15,16 +15,23 @@ from src.utils import load_json
 from src import plot_utils as put
 from src.plot_utils import  color_dict, zorder_dict,  get_score_name
 
-exp_name = 'cifar10-resnet110'
+# id for saving plots
+exp_name = 'imagenet32-resnet110' 
+# list all config ids here
+output_names = ['imagenet32-resnet110-adamw', 'imagenet32-resnet110-sps',
+                'imagenet32-resnet110-proxsps', 'imagenet32-resnet110-sgd']
 
+#%matplotlib qt5
 save = False # save plots or not
+
 xlim = None
     
 #%% load results
 
-result_path = 'results/' + exp_name
-
-res = load_json(result_path)
+res = list()
+for o in output_names:
+    result_path = 'results/' + o
+    res += load_json(result_path)
 
 print(f"Loaded results for {len(res)} different configurations.")
 
@@ -97,7 +104,7 @@ def plot_metric(df, s, log_scale=False, sigma=0, save=False):
     
     return fig
 
-################
+#%%
 fig = plot_metric(df, 'train_obj', log_scale=True, sigma=1, save=save)
 fig = plot_metric(df, 'val_score', log_scale=False, sigma=1, save=save)
 fig = plot_metric(df, 'model_norm', log_scale=False, sigma=1, save=save)

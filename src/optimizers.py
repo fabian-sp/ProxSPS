@@ -24,7 +24,7 @@ def get_optimizer(exp_dict, params):
             
     elif opt_name == 'sps':
         opt = SPS(params, lr=opt_dict['lr'], weight_decay=weight_decay, fstar=opt_dict.get('fstar',0), prox=False)
-               
+            
     # Adam      
     elif opt_name == 'adam':
         opt = torch.optim.Adam(params, lr=opt_dict['lr'], weight_decay=weight_decay)
@@ -68,8 +68,30 @@ def get_scheduler(opt, opt_dict):
     elif name == 'exponential':
         scheduler = StepLR(opt, step_size=30, gamma=0.5)
      
+    elif name == 'adaptive':
+        scheduler = AdaptiveLR(opt)
     else:
-        raise ValueError("Unknown learning rate schedule")
+        raise ValueError("Unknown larning rate schedule")
     
     return scheduler
 
+
+# LR Scheduler for using adaptive alpha_k (only for SPS)
+class AdaptiveLR(_LRScheduler):
+    def __init__(self, optimizer, last_epoch=-1, verbose=False, default_lr=1.):
+        self.opt = optimizer
+        self.default_lr = default_lr
+        super(AdaptiveLR, self).__init__(optimizer, last_epoch, verbose)
+        
+    def get_lr(self):
+        if self.opt.state.get('step_size_list'):
+            if len(self.opt.state['step_size_list']) > 0:
+                v = np.median(self.opt.state['step_size_list'])
+            else:
+                warnings.warn("Optimizer object has empty step_size_list, using 1.")
+                v = self.default_lr # empty list
+        else:
+            warnings.warn("Optimizer object has no attribute step_size_list, using 1.")
+            v = self.default_lr # no list attribute
+            
+        return [base_lr * v for base_lr in self.base_lrs]

@@ -3,10 +3,18 @@ from torch import nn
 import math
 import torchvision.models as torch_models
 
-from .resnet import resnet32, resnet56, resnet110
+from .resnet import resnet32, resnet56, resnet110, imagenet32_resnet110
+from .vgg import vgg13, vgg19
+
 
 def get_model(exp_dict, train_set):
     name = exp_dict['model']
+    
+    # for cifar last layer depends on dataset
+    dataset_name = exp_dict['dataset']
+    if dataset_name in ['cifar10', 'cifar100']:
+        num_classes = 10 if dataset_name == 'cifar10' else 100
+
     model_kwargs = exp_dict.get('model_kwargs', {})
     
     if name == "linear":
@@ -15,32 +23,40 @@ def get_model(exp_dict, train_set):
     
     elif name == "matrix_fac":
         model = MatrixFac(input_size=exp_dict["p1"], output_size=exp_dict["p2"], rank=exp_dict["model_kwargs"]["rank"])
-        
-    elif name == "matrix_complete":
-        model = MatrixComplete(dim1=train_set.dataset.dim1, dim2=train_set.dataset.dim2, rank=exp_dict["model_kwargs"]["rank"])
-        
+            
     elif name == "mlp":
         model = MLP(**model_kwargs)
 
-    elif name == "convnet":
-        model = ConvNet()
-
+    # ResNet
     elif name == "resnet32":
-        model = resnet32(**model_kwargs)
+        model = resnet32(num_classes=num_classes, **model_kwargs)
     
     elif name == "resnet56":
-        model = resnet56(**model_kwargs)
+        model = resnet56(num_classes=num_classes, **model_kwargs)
         
     elif name == "resnet110":
-        model = resnet110(**model_kwargs)
+        model = resnet110(num_classes=num_classes, **model_kwargs)
+
+    elif name == "imagenet32-resnet110":
+        model = imagenet32_resnet110(**model_kwargs)
     
-    elif name == 'vgg13-cifar10':
-        model =  vgg13(**model_kwargs)
+    # VGG
+    elif name == 'vgg13':
+        model =  vgg13(num_classes=num_classes, **model_kwargs)
     
-    elif name == 'vgg19-cifar10':
-        model =  vgg19(**model_kwargs)
+    elif name == 'vgg19':
+        model =  vgg19(num_classes=num_classes, **model_kwargs)
+
+    elif name == 'imagenet32-vgg19':
+        model =  vgg19(num_classes=1000, **model_kwargs)
+
+    # other
+    elif name == "matrix_complete":
+        model = MatrixComplete(dim1=train_set.dataset.dim1, dim2=train_set.dataset.dim2, rank=exp_dict["model_kwargs"]["rank"])
     
-    
+    elif name == "convnet":
+        model = ConvNet()
+   
     return model
 
 
@@ -100,87 +116,6 @@ class MatrixComplete(nn.Module):
     def get_matrix(self):
         W = self.U.weight.T @ self.V.weight + self.bias_U[:,None] + self.bias_V[None,:]
         return W
-        
-
-# =====================================================
-# from https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/vgg.py
-# VGG architecture for CIFAR
-
-class VGG(nn.Module):
-    '''
-    VGG model 
-    '''
-    def __init__(self, features):
-        super(VGG, self).__init__()
-        self.features = features
-        self.classifier = nn.Sequential(
-            nn.Dropout(),
-            nn.Linear(512, 512),
-            nn.ReLU(True),
-            nn.Dropout(),
-            nn.Linear(512, 512),
-            nn.ReLU(True),
-            nn.Linear(512, 10),
-        )
-         # Initialize weights
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
-                m.bias.data.zero_()
-
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        x = self.classifier(x)
-        return x
-
-
-def make_layers(cfg, use_bn=False):
-    layers = []
-    in_channels = 3
-    for v in cfg:
-        if v == 'M':
-            layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
-        else:
-            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
-            if use_bn:
-                layers += [conv2d, nn.BatchNorm2d(v), nn.ReLU(inplace=True)]
-            else:
-                layers += [conv2d, nn.ReLU(inplace=True)]
-            in_channels = v
-    return nn.Sequential(*layers)
-
-
-cfg = {
-    'A': [64, 'M', 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'B': [64, 64, 'M', 128, 128, 'M', 256, 256, 'M', 512, 512, 'M', 512, 512, 'M'],
-    'D': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
-    'E': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 
-          512, 512, 512, 512, 'M'],
-}
-
-
-def vgg11(use_bn=False):
-    """VGG 11-layer model (configuration "A")"""
-    return VGG(make_layers(cfg['A'], use_bn=use_bn))
-
-
-def vgg13(use_bn=False):
-    """VGG 13-layer model (configuration "B")"""
-    return VGG(make_layers(cfg['B'], use_bn=use_bn))
-
-
-def vgg16(use_bn=False):
-    """VGG 16-layer model (configuration "D")"""
-    return VGG(make_layers(cfg['D'], use_bn=use_bn))
-
-
-def vgg19(use_bn=False):
-    """VGG 19-layer model (configuration "E")"""
-    return VGG(make_layers(cfg['E'], use_bn=use_bn))
-
 
 # =====================================================
 # Autoencoder for MNIST

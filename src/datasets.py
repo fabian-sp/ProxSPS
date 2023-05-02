@@ -10,6 +10,8 @@ from sklearn.datasets import make_low_rank_matrix
 from torch.utils.data import Dataset
 from torch.testing import assert_allclose
 
+from .imagenet32 import get_imagenet32
+
 _BASE_SEED = 12345678
 
 class DatasetWrapper:
@@ -225,7 +227,11 @@ def get_dataset(dataset_name, split, datadir, exp_dict, seed=None):
             Y_test = torch.FloatTensor(Y_test)
             dataset = torch.utils.data.TensorDataset(X_test, Y_test)
             
-
+    #=========================================================
+    ## IMAGENET
+    #=========================================================
+    elif dataset_name == "imagenet32":          
+        dataset = get_imagenet32(split, path=datadir)
     #=========================================================
     ## CIFAR
     ## see https://github.com/chengyangfu/pytorch-vgg-cifar10/blob/master/main.py
@@ -256,7 +262,31 @@ def get_dataset(dataset_name, split, datadir, exp_dict, seed=None):
                                                    download=True, 
                                                    transform=transform_val
                                                    )
+    elif dataset_name == "cifar100":
+        normalize = transforms.Normalize(mean=[0.5071, 0.4866, 0.4409],
+                                     std=[0.2673, 0.2564, 0.2762])
 
+        if train_flag:
+            transform_train = transforms.Compose([transforms.RandomHorizontalFlip(),
+                                                transforms.RandomCrop(32, 4),
+                                                transforms.ToTensor(),
+                                                normalize,
+                                                ])
+            
+            dataset = torchvision.datasets.CIFAR100(root=datadir, train=True, 
+                                                    download=True,
+                                                    transform=transform_train
+                                                    )
+        else:
+        
+            transform_val = transforms.Compose([transforms.ToTensor(),
+                                                normalize,
+                                                ])
+        
+            dataset = torchvision.datasets.CIFAR100(root=datadir, train=False, 
+                                                    download=True, 
+                                                    transform=transform_val
+                                                    )
 
     else:
         raise KeyError("Not a known dataset option!")

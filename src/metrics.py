@@ -20,7 +20,7 @@ def get_metric_function(metric):
     
     elif metric == 'rmse':
         return rmse
-    
+
     else:
         raise NotImplementedError("Unknown metric function.")
 

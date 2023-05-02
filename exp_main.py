@@ -138,7 +138,7 @@ def _run(exp_dict):
             score_dict['model_rank'] = torch.linalg.matrix_rank(W).item()
         # ===========================================
         
-        # Store and reset step size list for (dec)SPS
+        # Store and reset step size list for SPS
         score_dict['step_size_list'] =  [float(np.format_float_scientific(t,5)) for t in base.opt.state['step_size_list']]
         
         if exp_dict['opt']['name'] in ['sps', 'prox-sps']:
@@ -158,8 +158,6 @@ Structure of result
  ]
 
 """
-
-exp_list = ['test']
 
 def run_exp(exp_name, start=None, stop=None):
     print("Running experiment: %s" % exp_name)
@@ -201,8 +199,11 @@ def run_exp(exp_name, start=None, stop=None):
 
 #%%
 #exp_dict=configs.EXP_GROUPS[exp_list[0]][0]
+exp_list = ['cifar10-resnet110']
 
 if __name__ == '__main__':
     
     for exp_name in exp_list:
         run_exp(exp_name, start=None, stop=None)
+
+        

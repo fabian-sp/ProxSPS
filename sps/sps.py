@@ -113,7 +113,7 @@ class SPS(torch.optim.Optimizer):
                 t1 = (nom/denom).item()
                 t2 = max(0., t1)                 
                 if not self.prox:
-                    assert t1 >= 0 # always t2 = t1 for SPS
+                    assert t1 >= 0 # always = t1 for SPS
         
                 # compute tau^+
                 tau = min(lr, t2) 
@@ -129,7 +129,7 @@ class SPS(torch.optim.Optimizer):
 
         return float(loss)
     
-        
+    @torch.no_grad()   
     def compute_grad_terms(self, need_gdotw=True):
         """
         computes:
@@ -143,10 +143,10 @@ class SPS(torch.optim.Optimizer):
                 if p.grad is None:
                     raise KeyError("None gradient")
                 
-                g = p.grad
+                g = p.grad.data
                 grad_norm += torch.sum(torch.mul(g, g))
                 if need_gdotw:
-                    grad_dot_w += torch.sum(torch.mul(p, g))
+                    grad_dot_w += torch.sum(torch.mul(p.data, g))
           
         grad_norm = torch.sqrt(grad_norm)
         return grad_norm, grad_dot_w

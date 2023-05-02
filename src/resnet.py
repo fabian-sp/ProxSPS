@@ -123,28 +123,30 @@ class ResNet(nn.Module):
         return out
 
 
-def resnet20(use_bn=True):
-    return ResNet(BasicBlock, [3, 3, 3], use_bn=use_bn)
+def resnet20(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [3, 3, 3], use_bn=use_bn, num_classes=num_classes)
 
 
-def resnet32(use_bn=True):
-    return ResNet(BasicBlock, [5, 5, 5], use_bn=use_bn)
+def resnet32(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [5, 5, 5], use_bn=use_bn, num_classes=num_classes)
 
 
-def resnet44(use_bn=True):
-    return ResNet(BasicBlock, [7, 7, 7], use_bn=use_bn)
+def resnet44(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [7, 7, 7], use_bn=use_bn, num_classes=num_classes)
 
 
-def resnet56(use_bn=True):
-    return ResNet(BasicBlock, [9, 9, 9], use_bn=use_bn)
+def resnet56(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [9, 9, 9], use_bn=use_bn, num_classes=num_classes)
 
 
-def resnet110(use_bn=True):
-    return ResNet(BasicBlock, [18, 18, 18], use_bn=use_bn)
+def resnet110(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [18, 18, 18], use_bn=use_bn, num_classes=num_classes)
 
+def imagenet32_resnet110(use_bn=True):
+    return ResNet(BasicBlock, [18, 18, 18], use_bn=use_bn, num_classes=1000)
 
-def resnet1202(use_bn=True):
-    return ResNet(BasicBlock, [200, 200, 200], use_bn=use_bn)
+def resnet1202(use_bn=True, num_classes=10):
+    return ResNet(BasicBlock, [200, 200, 200], use_bn=use_bn, num_classes=num_classes)
 
 
 def test(net):

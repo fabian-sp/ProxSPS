@@ -1,7 +1,7 @@
-# Proximal Stochastic Polyak 
+# Proximal Stochastic Polyak
 
 [![arXiv](https://img.shields.io/badge/arXiv-2011.00898-b31b1b.svg)](https://arxiv.org/abs/2301.04935)
-
+ 
 
 ![](results/plots/misc/flow_squared.gif)
 
@@ -23,4 +23,4 @@ The scripts automatically detects whether `cuda` is available and if so, runs on
 
 ## Comments
 
-The starting point for this repository was the [offical SPS repository](https://github.com/IssamLaradji/sps). However, we carried out several refactoring steps and rewrote also slightly the optimizer in order to handle regularization.
+The starting point for this repository was the [offical SPS repository](https://github.com/IssamLaradji/sps). However, we carried out several refactoring steps in the experimental setup. We also refactored the SPS optimizer in order to handle regularization.

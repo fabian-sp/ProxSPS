@@ -24,3 +24,20 @@ The scripts automatically detects whether `cuda` is available and if so, runs on
 ## Comments
 
 The starting point for this repository was the [offical SPS repository](https://github.com/IssamLaradji/sps). However, we carried out several refactoring steps in the experimental setup. We also refactored the SPS optimizer in order to handle regularization.
+
+
+## Citation
+
+If you use `ProxSPS`, please cite as
+
+```
+@Article{Schaipp2023,
+  author  = {Fabian Schaipp and Robert M. Gower and Michael Ulbrich},
+  journal = {Transactions on Machine Learning Research},
+  title   = {A Stochastic Proximal {P}olyak Step Size},
+  year    = {2023},
+  issn    = {2835-8856},
+  note    = {Reproducibility Certification},
+  url     = {https://openreview.net/forum?id=jWr41htaB3},
+}
+```

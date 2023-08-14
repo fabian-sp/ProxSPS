@@ -69,7 +69,7 @@ class Base():
         for _met in metrics:
             metric_functions[_met] = get_metric_function(_met)
         
-        loader = torch.utils.data.DataLoader(dataset, drop_last=True, batch_size=self.exp_dict['batch_size'])
+        loader = torch.utils.data.DataLoader(dataset, drop_last=False, batch_size=self.exp_dict['batch_size'])
         score = dict(zip(metrics, np.zeros(len(metrics))))
         
         pbar = tqdm.tqdm(loader)
